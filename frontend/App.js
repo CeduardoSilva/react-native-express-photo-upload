@@ -11,7 +11,34 @@ import {launchImageLibrary} from 'react-native-image-picker';
 
 const SERVER_URL = 'http://localhost:3000';
 
+const createFormData = (photo, body = {}) => {
+  const data = new FormData();
+
+  console.log('createFormData');
+  console.log(photo);
+
+  data.append('photo', {
+    name: photo.fileName,
+    type: photo.type,
+    uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
+  });
+
+  Object.keys(body).forEach((key) => {
+    data.append(key, body[key]);
+  });
+
+  return data;
+};
+
 const UploadButton = () => {
+  return (
+    <View style={styles.uploadButton}>
+      <Text>Upload Image</Text>
+    </View>
+  );
+};
+
+const ChoosePhotoButton = () => {
   return (
     <View style={styles.uploadButton}>
       <Text>Select Image</Text>
@@ -23,12 +50,34 @@ const App = () => {
 
   const [image, setImage] = useState(null);
 
+  const handleUploadPhoto = () => {
+    fetch(`${SERVER_URL}/api/upload`, {
+      method: 'POST',
+      body: createFormData(image, { userId: '123' }),
+    })
+      .then((response) => {
+        console.log('first response:', response);
+        let responseJson = response.json();
+        console.log('responseJson:', responseJson);
+        return responseJson
+      })
+      .then((response) => {
+        console.log('second response:', response);
+      })
+      .catch((error) => {
+        console.log('error:', error);
+      });
+  };
+
   const handleChoosePhoto = () => {
     const options = {
       noData: true,
     };
     launchImageLibrary(options, response => {
       console.log('response', response);
+      if (response) {
+        setImage(response.assets[0]);
+      }
     });
   };
 
@@ -43,6 +92,9 @@ const App = () => {
           }}
         />
         <TouchableOpacity onPress={() => handleChoosePhoto()}>
+          <ChoosePhotoButton />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleUploadPhoto()}>
           <UploadButton />
         </TouchableOpacity>
       </View>

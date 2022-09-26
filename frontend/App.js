@@ -17,7 +17,7 @@ const createFormData = (photo, body = {}) => {
   console.log('createFormData');
   console.log(photo);
 
-  data.append('photo', {
+  data.append('upload', {
     name: photo.fileName,
     type: photo.type,
     uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,

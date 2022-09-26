@@ -14,11 +14,8 @@ const SERVER_URL = 'http://localhost:3000';
 const createFormData = (photo, body = {}) => {
   const data = new FormData();
 
-  console.log('createFormData');
-  console.log(photo);
-
   data.append('upload', {
-    name: photo.fileName,
+    name: 'uploaded_image',
     type: photo.type,
     uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
   });
@@ -56,13 +53,10 @@ const App = () => {
       body: createFormData(image, { userId: '123' }),
     })
       .then((response) => {
-        console.log('first response:', response);
         let responseJson = response.json();
-        console.log('responseJson:', responseJson);
         return responseJson
       })
       .then((response) => {
-        console.log('second response:', response);
       })
       .catch((error) => {
         console.log('error:', error);
@@ -74,7 +68,6 @@ const App = () => {
       noData: true,
     };
     launchImageLibrary(options, response => {
-      console.log('response', response);
       if (response) {
         setImage(response.assets[0]);
       }

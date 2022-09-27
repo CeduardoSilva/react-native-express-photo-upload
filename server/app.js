@@ -26,10 +26,6 @@ const upload = multer({
   }),
 }).array("upload", 1);
 
-app.get("/", (req, res) => {
-  res.status(200).send("You can post to /api/upload.");
-});
-
 app.post("/api/upload", function (request, response, next) {
   upload(request, response, function (error) {
     if (error) {

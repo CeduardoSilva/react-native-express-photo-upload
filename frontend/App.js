@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,11 +11,11 @@ import {launchImageLibrary} from 'react-native-image-picker';
 
 const SERVER_URL = 'http://localhost:3000';
 
-const createFormData = (photo, body = {}) => {
+const createFormData = (photo, body = {}, filename) => {
   const data = new FormData();
 
   data.append('upload', {
-    name: 'uploaded_image',
+    name: filename,
     type: photo.type,
     uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
   });
@@ -46,17 +46,22 @@ const ChoosePhotoButton = () => {
 const App = () => {
 
   const [image, setImage] = useState(null);
+  const [filename, setFilename] = useState('');
+  const [photoURL, setPhotoURL] = useState('');
+
+  useEffect(() => {
+    console.log('Rerendering for photo url update: ', photoURL);
+  }, [photoURL]);
 
   const handleUploadPhoto = () => {
     fetch(`${SERVER_URL}/api/upload`, {
       method: 'POST',
-      body: createFormData(image, { userId: '123' }),
+      body: createFormData(image, { userId: '123' }, filename),
     })
       .then((response) => {
         let responseJson = response.json();
+        setPhotoURL(`https://ceduardods-bucket.fra1.digitaloceanspaces.com/${filename}`)
         return responseJson
-      })
-      .then((response) => {
       })
       .catch((error) => {
         console.log('error:', error);
@@ -69,7 +74,9 @@ const App = () => {
     };
     launchImageLibrary(options, response => {
       if (response) {
+        console.log(response.assets[0].fileName);
         setImage(response.assets[0]);
+        setFilename(response.assets[0].fileName);
       }
     });
   };
@@ -81,7 +88,7 @@ const App = () => {
         <Image
           style={styles.image}
           source={{
-            uri: 'https://reactnative.dev/img/tiny_logo.png',
+            uri: photoURL,
           }}
         />
         <TouchableOpacity onPress={() => handleChoosePhoto()}>

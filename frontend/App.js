@@ -1,16 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View, Image} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
-import { ChoosePhotoButton } from './src/components/ChoosePhotoButton';
-import { UploadButton } from './src/components/UploadButton';
+import {ChoosePhotoButton} from './src/components/ChoosePhotoButton';
+import {UploadButton} from './src/components/UploadButton';
 import {uploadPhoto} from './src/services/photo-service';
-import { PLACEHOLDER_URL } from './src/shared/constants';
+import {PLACEHOLDER_URL} from './src/shared/constants';
 
 const App = () => {
   const [photo, setPhoto] = useState(null);
@@ -46,14 +40,22 @@ const App = () => {
             uri: photoURL,
           }}
         />
-        <ChoosePhotoButton handleChoosePhoto={handleChoosePhoto}/>
-        <UploadButton handleUploadPhoto={handleUploadPhoto}/>
+        <View style={styles.btnsContainer}>
+          <ChoosePhotoButton handleChoosePhoto={handleChoosePhoto} />
+          <UploadButton handleUploadPhoto={handleUploadPhoto} />
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  btnsContainer: {
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    width: '50%',
+    height: '20%',
+  },
   container: {
     backgroundColor: 'white',
     alignItems: 'center',
@@ -62,6 +64,9 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   image: {
+    borderColor: 'dodgerblue',
+    borderRadius: 2,
+    borderWidth: 2,
     width: 300,
     height: 300,
   },
@@ -71,4 +76,3 @@ const styles = StyleSheet.create({
 });
 
 export default App;
- 

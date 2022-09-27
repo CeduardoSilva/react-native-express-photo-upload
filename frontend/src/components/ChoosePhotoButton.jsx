@@ -11,18 +11,25 @@ export const ChoosePhotoButton = (props) => {
     return (
         <TouchableOpacity onPress={handleChoosePhoto}>
             <View style={styles.choosePhotoButton}>
-                <Text>Select Photo</Text>
+                <Text style={styles.btnText}>Choose Photo</Text>
             </View>
         </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
+    btnText: {
+        fontSize: 20,
+    },
     choosePhotoButton: {
-        backgroundColor: 'grey',
+        boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'white',
+        borderColor: 'dodgerblue',
+        borderRadius: 3,
+        borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width: 100,
-        height: 50,
+        width: 160,
+        height: 55,
     }
 });

@@ -11,18 +11,25 @@ export const UploadButton = (props) => {
     return (
         <TouchableOpacity onPress={handleUploadPhoto}>
             <View style={styles.uploadButton}>
-                <Text>Upload Photo</Text>
+                <Text style={styles.btnText}>Upload Photo</Text>
             </View>
         </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
+    btnText: {
+        color: 'white',
+        fontSize: 20,
+    },
     uploadButton: {
-        backgroundColor: 'grey',
+        backgroundColor: 'dodgerblue',
+        borderColor: 'dodgerblue',
+        borderRadius: 3,
+        borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width: 100,
-        height: 50,
+        width: 160,
+        height: 55,
     }
 });

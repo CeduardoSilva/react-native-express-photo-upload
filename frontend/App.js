@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -8,29 +8,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
-
-const SERVER_URL = 'http://localhost:3000';
-
-const createFormData = (photo, body = {}, filename) => {
-  const data = new FormData();
-
-  data.append('upload', {
-    name: filename,
-    type: photo.type,
-    uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
-  });
-
-  Object.keys(body).forEach((key) => {
-    data.append(key, body[key]);
-  });
-
-  return data;
-};
+import {uploadPhoto} from './src/services/photo-service';
 
 const UploadButton = () => {
   return (
     <View style={styles.uploadButton}>
-      <Text>Upload Image</Text>
+      <Text>Upload Photo</Text>
     </View>
   );
 };
@@ -38,34 +21,24 @@ const UploadButton = () => {
 const ChoosePhotoButton = () => {
   return (
     <View style={styles.uploadButton}>
-      <Text>Select Image</Text>
+      <Text>Select Photo</Text>
     </View>
   );
 };
 
 const App = () => {
-
-  const [image, setImage] = useState(null);
+  const [photo, setPhoto] = useState(null);
   const [filename, setFilename] = useState('');
-  const [photoURL, setPhotoURL] = useState('');
+  const [photoURL, setPhotoURL] = useState('https://play-lh.googleusercontent.com/V_P-I-UENK93ahkQgOWel8X8yFxjhOOfMAZjxXrqp311Gm_RBtlDXHLQhwFZN8n4aIQ=w480-h960-rw');
 
   useEffect(() => {
-    console.log('Rerendering for photo url update: ', photoURL);
+    console.log('Re-rendering for photo url update: ', photoURL);
   }, [photoURL]);
 
-  const handleUploadPhoto = () => {
-    fetch(`${SERVER_URL}/api/upload`, {
-      method: 'POST',
-      body: createFormData(image, { userId: '123' }, filename),
-    })
-      .then((response) => {
-        let responseJson = response.json();
-        setPhotoURL(`https://ceduardods-bucket.fra1.digitaloceanspaces.com/${filename}`)
-        return responseJson
-      })
-      .catch((error) => {
-        console.log('error:', error);
-      });
+  const handleUploadPhoto = async () => {
+    let newPhotoURL = await uploadPhoto(photo, filename);
+    console.log(`New photo url: ${newPhotoURL}` )
+    setPhotoURL(newPhotoURL);
   };
 
   const handleChoosePhoto = () => {
@@ -75,7 +48,7 @@ const App = () => {
     launchImageLibrary(options, response => {
       if (response) {
         console.log(response.assets[0].fileName);
-        setImage(response.assets[0]);
+        setPhoto(response.assets[0]);
         setFilename(response.assets[0].fileName);
       }
     });
@@ -127,3 +100,4 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+ 
